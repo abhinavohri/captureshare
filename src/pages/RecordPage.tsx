@@ -12,6 +12,12 @@ export const RecordPage = () => {
   const videoRef = useRef<HTMLVideoElement>(null)
   const cameraRef = useRef<HTMLVideoElement>(null)
 
+  const [isRecording, setIsRecording] = useState(false);
+  const [mediaRecorder, setMediaRecorder] = useState<MediaRecorder | null>(null);
+  const [videoUrl, setVideoUrl] = useState<string>("");
+  
+  const recordedChunksRef = useRef<Blob[]>([]);
+
   const displayMediaOptions = {
     video: {
       displaySurface: "window",
@@ -76,13 +82,55 @@ export const RecordPage = () => {
     }
     if (screenShare) {
       screenShare.getTracks().forEach(track => track.stop());
-      setAudioStream(null);
-    }  
+      setScreenShare(null);
+    }
     if (cameraStream) {
       cameraStream.getTracks().forEach(track => track.stop());
-      setAudioStream(null);
+      setCameraStream(null);
     }
   }
+
+  const startRecording = () => {
+    const tracks = [
+      ...(screenShare?.getVideoTracks() || []),
+      ...(cameraStream?.getVideoTracks() || []),
+      ...(audioStream?.getAudioTracks() || []),
+    ];
+
+    if (tracks.length === 0) {
+      alert("Please enable at least one source (screen, camera, or microphone).");
+      return;
+    }
+    recordedChunksRef.current = [];
+    
+    const combinedStream = new MediaStream(tracks);
+    const recorder = new MediaRecorder(combinedStream);
+    
+    setMediaRecorder(recorder);
+    
+    recorder.ondataavailable = (event) => {
+      if (event.data.size > 0) {
+        recordedChunksRef.current.push(event.data);
+      }
+    };
+    
+    recorder.onstop = () => {
+      const blob = new Blob(recordedChunksRef.current, { type: "video/webm" });
+      const url = URL.createObjectURL(blob);
+      setVideoUrl(url);
+      setIsRecording(false);
+    };
+
+    recorder.start();
+    setIsRecording(true);
+  }
+
+  const stopRecording = () => {
+    if (mediaRecorder && mediaRecorder.state === "recording") {
+      mediaRecorder.stop();
+    }
+  };
+
   return (
     <>
       <div>Record Page</div>
@@ -114,6 +162,30 @@ export const RecordPage = () => {
         </button>
         <button onClick={stopAllStreams}>STOP ALL</button>
       </div>
+      <div>
+          {!isRecording ? (
+            <button onClick={startRecording} disabled={!screenShare && !cameraStream && !audioStream}>
+              Record
+            </button>
+          ) : (
+            <button onClick={stopRecording}>
+              Stop
+            </button>
+          )}
+      </div>
+
+      {videoUrl && (
+        <div className="video-preview-container">
+          <h2>Recording Complete</h2>
+          <video src={videoUrl} controls />
+          <a 
+            href={videoUrl} 
+            download={`recording-${Date.now()}.webm`}
+          >
+            Download Video
+          </a>
+        </div>
+      )}
     </>
   );
 };
