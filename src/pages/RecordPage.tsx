@@ -133,47 +133,51 @@ export const RecordPage = () => {
 
   return (
     <>
-      <div>Record Page</div>
-      <video
-        ref={videoRef}
-        height='500px'
-        width='500px'
-        autoPlay
-        playsInline
-        muted // to prevent audio feedback
-        className="live-preview-video"
-      />
-      <video
-        ref={cameraRef}
-        className="camera-preview"
-        autoPlay
-        playsInline
-        muted // to prevent audio feedback
-      />
-      <div className="button-tray">
-        <button aria-label="Start Recording" onClick={toggleScreenCapture}>
-          <img src={screenShare ? STOP : START} alt={screenShare ? "Stop Recording" : "Start Recording"} />
-        </button>
-        <button aria-label="Virtual Camera" onClick={toggleCamera}>
-          <img src={CAMERA} alt="Virtual Camera" />
-        </button>
-        <button aria-label="Microphone" onClick={toggleAudio}>
-          <img src={audioStream ? MIC : MICOFF} alt={audioStream ? "Microphone On" : "Microphone Off"} />
-        </button>
-        <button onClick={stopAllStreams}>STOP ALL</button>
-      </div>
-      <div>
-          {!isRecording ? (
-            <button onClick={startRecording} disabled={!screenShare && !cameraStream && !audioStream}>
-              Record
-            </button>
-          ) : (
-            <button onClick={stopRecording}>
-              Stop
-            </button>
-          )}
-      </div>
+      <div className="main-contianer">
+        <div className='capture-container'>
+          <video
+            ref={videoRef}
+            autoPlay
+            playsInline
 
+            muted // to prevent audio feedback
+            id="screenshare-preview"
+          />
+          <div id="camera-container">
+            <video
+              ref={cameraRef}
+              id="camera-preview"
+              autoPlay
+              playsInline
+
+              muted // to prevent audio feedback
+            />
+          </div>
+        </div>
+        <div className="control-tray">
+          <button aria-label="Start Recording" onClick={toggleScreenCapture}>
+            <img src={screenShare ? STOP : START} alt={screenShare ? "Stop Recording" : "Start Recording"} />
+          </button>
+          <button aria-label="Virtual Camera" onClick={toggleCamera}>
+            <img src={CAMERA} alt="Virtual Camera" />
+          </button>
+          <button aria-label="Microphone" onClick={toggleAudio}>
+            <img src={audioStream ? MIC : MICOFF} alt={audioStream ? "Microphone On" : "Microphone Off"} />
+          </button>
+          <button onClick={stopAllStreams}>STOP ALL</button>
+          <div>
+            {!isRecording ? (
+              <button onClick={startRecording} disabled={!screenShare && !cameraStream && !audioStream}>
+                Record
+              </button>
+            ) : (
+              <button onClick={stopRecording}>
+                Stop
+              </button>
+            )}
+          </div>
+        </div>
+      </div>
       {videoUrl && (
         <div className="video-preview-container">
           <h2>Recording Complete</h2>
@@ -186,6 +190,6 @@ export const RecordPage = () => {
           </a>
         </div>
       )}
-    </>
+  </>
   );
 };

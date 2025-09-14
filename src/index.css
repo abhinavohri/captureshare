@@ -1,3 +1,10 @@
+* {
+  box-sizing: border-box;
+  margin: 0;
+  padding: 0;
+  overscroll-behavior: none;
+}
+
 :root {
   font-family: system-ui, Avenir, Helvetica, Arial, sans-serif;
   line-height: 1.5;
@@ -5,7 +12,7 @@
 
   color-scheme: light dark;
   color: rgba(255, 255, 255, 0.87);
-  background-color: #242424;
+  background-color: #131313;
 
   font-synthesis: none;
   text-rendering: optimizeLegibility;
@@ -22,13 +29,6 @@ a:hover {
   color: #535bf2;
 }
 
-body {
-  margin: 0;
-  display: flex;
-  place-items: center;
-  min-width: 320px;
-  min-height: 100vh;
-}
 
 h1 {
   font-size: 3.2em;
@@ -42,7 +42,6 @@ button {
   font-size: 1em;
   font-weight: 500;
   font-family: inherit;
-  background-color: #1a1a1a;
   cursor: pointer;
   transition: border-color 0.25s;
 }
@@ -54,15 +53,54 @@ button:focus-visible {
   outline: 4px auto -webkit-focus-ring-color;
 }
 
-@media (prefers-color-scheme: light) {
-  :root {
-    color: #213547;
-    background-color: #ffffff;
-  }
-  a:hover {
-    color: #747bff;
-  }
-  button {
-    background-color: #f9f9f9;
-  }
+.capture-container {
+  position: relative;
+  padding: 1rem;
+  margin: 1rem;
+  border: 2px solid green;
+  border-radius: 10px;
+  height: 88vh;
+}
+
+#screenshare-preview {
+  height: 100%;
+  width: 100%;
+  object-fit: contain;
+}
+
+#camera-container{
+  position: absolute;
+  z-index: 2;
+  right: 20px;
+  bottom: 20px;
+  border-radius: 10px;
+  width: 240px;
+  height: 180px;
+  border-radius: 8px;
+  border: 2px solid #fff;
+  box-shadow: 0 4px 12px rgba(0,0,0,0.4);
+  background-color: #222;
+  overflow: hidden;
+}
+
+#camera-preview {
+  width: 100%;
+  height: 100%;
+  object-fit: contain; 
+}
+
+.control-tray {
+  display: flex;
+  position: fixed;
+  bottom: 0;
+  left: 0;
+  right: 0;
+  height: 10%;
+  justify-content: center;
+  align-items: center;
+}
+
+.main-container {
+  height: 100vh;
+  padding: 1rem;
 }
