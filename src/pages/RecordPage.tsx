@@ -36,6 +36,13 @@ export const RecordPage = () => {
     };
   }, [isRecording, videoUrl])
 
+  // show the camera feed only when its on
+  useEffect(() => {
+    if (cameraStream && cameraRef.current) {
+      cameraRef.current.srcObject = cameraStream;
+    }
+  }, [cameraStream]);
+
   // modal
   const [show, setShow] = useState(false);
 
@@ -170,16 +177,18 @@ export const RecordPage = () => {
             muted // to prevent audio feedback
             id="screenshare-preview"
           />
-          <div id="camera-container">
-            <video
-              ref={cameraRef}
-              id="camera-preview"
-              autoPlay
-              playsInline
+          {cameraStream &&
+            <div className={`camera-container ${screenShare ? 'pip' : 'full-screen'}`}>
+              <video
+                ref={cameraRef}
+                id="camera-preview"
+                autoPlay
+                playsInline
 
-              muted // to prevent audio feedback
-            />
-          </div>
+                muted // to prevent audio feedback
+              />
+            </div>
+          }
         </div>
         <div className="control-tray">
           <button aria-label="Start Recording" onClick={toggleScreenCapture}>
