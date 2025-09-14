@@ -5,6 +5,9 @@ import CAMERA from "../assets/camera.svg";
 import MIC from "../assets/mic_on.svg";
 import MICOFF from "../assets/mic_off.svg";
 
+import Button from 'react-bootstrap/Button';
+import Modal from 'react-bootstrap/Modal';
+
 export const RecordPage = () => {
   const [screenShare, setScreenShare] = useState<MediaStream | null>(null)
   const [audioStream, setAudioStream] = useState<MediaStream | null>()
@@ -15,8 +18,16 @@ export const RecordPage = () => {
   const [isRecording, setIsRecording] = useState(false);
   const [mediaRecorder, setMediaRecorder] = useState<MediaRecorder | null>(null);
   const [videoUrl, setVideoUrl] = useState<string>("");
-  
+
   const recordedChunksRef = useRef<Blob[]>([]);
+
+  // modal
+  const [show, setShow] = useState(false);
+
+  const handleClose = () => {
+    setShow(false);
+    setVideoUrl("");
+  }
 
   const displayMediaOptions = {
     video: {
@@ -102,22 +113,23 @@ export const RecordPage = () => {
       return;
     }
     recordedChunksRef.current = [];
-    
+
     const combinedStream = new MediaStream(tracks);
     const recorder = new MediaRecorder(combinedStream);
-    
+
     setMediaRecorder(recorder);
-    
+
     recorder.ondataavailable = (event) => {
       if (event.data.size > 0) {
         recordedChunksRef.current.push(event.data);
       }
     };
-    
+
     recorder.onstop = () => {
       const blob = new Blob(recordedChunksRef.current, { type: "video/webm" });
       const url = URL.createObjectURL(blob);
       setVideoUrl(url);
+      setShow(true)
       setIsRecording(false);
     };
 
@@ -178,18 +190,31 @@ export const RecordPage = () => {
           </div>
         </div>
       </div>
-      {videoUrl && (
-        <div className="video-preview-container">
-          <h2>Recording Complete</h2>
-          <video src={videoUrl} controls />
-          <a 
-            href={videoUrl} 
+      <Modal
+        show={show}
+        onHide={handleClose}
+        backdrop="static"
+        keyboard={false}
+        centered
+      >
+        <Modal.Header closeButton>
+          <Modal.Title>Recording Complete</Modal.Title>
+        </Modal.Header>
+        <Modal.Body>
+          <video className='download-preview' src={videoUrl} controls />
+          <a
+            href={videoUrl}
             download={`recording-${Date.now()}.webm`}
           >
             Download Video
           </a>
-        </div>
-      )}
-  </>
+        </Modal.Body>
+        <Modal.Footer>
+          <Button variant="secondary" onClick={handleClose}>
+            Close
+          </Button>
+        </Modal.Footer>
+      </Modal>
+    </>
   );
 };

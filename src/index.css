@@ -4,7 +4,10 @@
   padding: 0;
   overscroll-behavior: none;
 }
+body {
+    background-color: #131313;
 
+}
 :root {
   font-family: system-ui, Avenir, Helvetica, Arial, sans-serif;
   line-height: 1.5;
@@ -12,7 +15,6 @@
 
   color-scheme: light dark;
   color: rgba(255, 255, 255, 0.87);
-  background-color: #131313;
 
   font-synthesis: none;
   text-rendering: optimizeLegibility;
@@ -103,4 +105,12 @@ button:focus-visible {
 .main-container {
   height: 100vh;
   padding: 1rem;
+}
+
+.download-preview {
+  width: 100%;
+}
+
+.download-modal {
+  max-width: 800px;
 }
