@@ -1,6 +1,6 @@
 import START from "../assets/start.svg";
 import STOP from "../assets/stop.svg";
-import { useState, useRef } from "react";
+import { useState, useRef, useEffect } from "react";
 import CAMERA from "../assets/camera.svg";
 import MIC from "../assets/mic_on.svg";
 import MICOFF from "../assets/mic_off.svg";
@@ -20,6 +20,21 @@ export const RecordPage = () => {
   const [videoUrl, setVideoUrl] = useState<string>("");
 
   const recordedChunksRef = useRef<Blob[]>([]);
+
+  // deal with misclicks
+  useEffect(() => {
+    const handleBeforeUnload = (event: BeforeUnloadEvent) => {
+      if (isRecording || videoUrl) {
+        event.preventDefault();
+      }
+    }
+
+    window.addEventListener('beforeunload', handleBeforeUnload)
+
+    return () => {
+      window.removeEventListener('beforeunload', handleBeforeUnload);
+    };
+  }, [isRecording, videoUrl])
 
   // modal
   const [show, setShow] = useState(false);
