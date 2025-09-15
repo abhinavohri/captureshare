@@ -97,7 +97,6 @@ export const RecordPage = () => {
     if (audioStream) {
       audioStream.getTracks().forEach(track => track.stop());
       setAudioStream(null)
-      alert('sound off')
     } else {
       try {
         const stream = await navigator.mediaDevices.getUserMedia({ audio: true, video: false })
@@ -226,12 +225,14 @@ export const RecordPage = () => {
         </Modal.Header>
         <Modal.Body>
           <video className='download-preview' src={videoUrl} controls />
-          <a
+          <button>
+            <a
             href={videoUrl}
             download={`recording-${Date.now()}.webm`}
           >
             Download Video
           </a>
+          </button>
         </Modal.Body>
         <Modal.Footer>
           <Button variant="secondary" onClick={handleClose}>
