@@ -1,9 +1,12 @@
 import START from "../assets/start.svg";
 import STOP from "../assets/stop.svg";
 import { useState, useRef, useEffect } from "react";
-import CAMERA from "../assets/camera.svg";
-import MIC from "../assets/mic_on.svg";
-import MICOFF from "../assets/mic_off.svg";
+import MIC from "../assets/MicOn.svg";
+import MICOFF from "../assets/MicOff.svg";
+import SCREENSHAREON from "../assets/ScreenShareOn.svg";
+import SCREENSHAREOFF from "../assets/ScreenShareOff.svg";
+import VIDEOON from "../assets/VideocamOn.svg";
+import VIDEOOFF from "../assets/VideocamOff.svg";
 
 import Button from 'react-bootstrap/Button';
 import Modal from 'react-bootstrap/Modal';
@@ -190,13 +193,13 @@ export const RecordPage = () => {
           }
         </div>
         <div className="control-tray">
-          <button aria-label="Start Recording" onClick={toggleScreenCapture}>
-            <img src={screenShare ? STOP : START} alt={screenShare ? "Stop Recording" : "Start Recording"} />
+          <button className={screenShare ? 'is-active' : ''} aria-label="Screenshare" onClick={toggleScreenCapture}>
+            <img src={screenShare ? SCREENSHAREON : SCREENSHAREOFF} alt={screenShare ? "Stop Recording" : "Start Recording"} />
           </button>
-          <button aria-label="Virtual Camera" onClick={toggleCamera}>
-            <img src={CAMERA} alt="Virtual Camera" />
+          <button className={cameraStream ? 'is-active' : ''} aria-label="Virtual Camera" onClick={toggleCamera}>
+            <img src={cameraStream ? VIDEOON : VIDEOOFF} alt="Virtual Camera" />
           </button>
-          <button aria-label="Microphone" onClick={toggleAudio}>
+          <button className={audioStream ? 'is-active' : ''} aria-label="Microphone" onClick={toggleAudio}>
             <img src={audioStream ? MIC : MICOFF} alt={audioStream ? "Microphone On" : "Microphone Off"} />
           </button>
           <button onClick={stopAllStreams}>STOP ALL</button>
@@ -227,11 +230,11 @@ export const RecordPage = () => {
           <video className='download-preview' src={videoUrl} controls />
           <button>
             <a
-            href={videoUrl}
-            download={`recording-${Date.now()}.webm`}
-          >
-            Download Video
-          </a>
+              href={videoUrl}
+              download={`recording-${Date.now()}.webm`}
+            >
+              Download Video
+            </a>
           </button>
         </Modal.Body>
         <Modal.Footer>
