@@ -1,5 +1,6 @@
-import START from "../assets/start.svg";
-import STOP from "../assets/stop.svg";
+import { StartIcon } from "../components/icons/StartIcon";
+import { StopIcon } from "../components/icons/StopIcon";
+import { SettingsIcon } from "../components/icons/SettingsIcon";
 import { useState, useRef, useEffect } from "react";
 import MIC from "../assets/MicOn.svg";
 import MICOFF from "../assets/MicOff.svg";
@@ -10,6 +11,8 @@ import VIDEOOFF from "../assets/VideocamOff.svg";
 
 import Button from 'react-bootstrap/Button';
 import Modal from 'react-bootstrap/Modal';
+import SettingsPanel from "../components/ui/SettingsPanel";
+
 
 export const RecordPage = () => {
   const [screenShare, setScreenShare] = useState<MediaStream | null>(null)
@@ -23,6 +26,16 @@ export const RecordPage = () => {
   const [videoUrl, setVideoUrl] = useState<string>("");
 
   const recordedChunksRef = useRef<Blob[]>([]);
+  const [cameraFrame, setCameraFrame] = useState<'rectangle' | 'circle'>('rectangle')
+
+  const handleCameraFrameChange = (event: React.ChangeEvent<HTMLInputElement>) => {
+    setCameraFrame(event.target.value as 'rectangle' | 'circle');
+  }
+
+  const [showSettingsModal, setShowSettingsModal] = useState(false);
+
+  const handleOpenSettings = () => setShowSettingsModal(true);
+  const handleCloseSettings = () => setShowSettingsModal(false);
 
   // deal with misclicks
   useEffect(() => {
@@ -164,6 +177,7 @@ export const RecordPage = () => {
   const stopRecording = () => {
     if (mediaRecorder && mediaRecorder.state === "recording") {
       mediaRecorder.stop();
+      stopAllStreams();
     }
   };
 
@@ -180,13 +194,12 @@ export const RecordPage = () => {
             id="screenshare-preview"
           />
           {cameraStream &&
-            <div className={`camera-container ${screenShare ? 'pip' : 'full-screen'}`}>
+            <div className={`camera-container ${screenShare ? 'pip' : 'full-screen'} ${cameraFrame === 'circle' ? 'camera-frame-circle' : 'camera-frame-rectangle'}`}>
               <video
                 ref={cameraRef}
                 id="camera-preview"
                 autoPlay
                 playsInline
-
                 muted // to prevent audio feedback
               />
             </div>
@@ -202,18 +215,20 @@ export const RecordPage = () => {
           <button className={audioStream ? 'is-active' : ''} aria-label="Microphone" onClick={toggleAudio}>
             <img src={audioStream ? MIC : MICOFF} alt={audioStream ? "Microphone On" : "Microphone Off"} />
           </button>
-          <button onClick={stopAllStreams}>STOP ALL</button>
           <div>
             {!isRecording ? (
-              <button onClick={startRecording} disabled={!screenShare && !cameraStream && !audioStream}>
-                Record
+              <button className='record-btn' onClick={startRecording} disabled={!screenShare && !cameraStream && !audioStream}>
+                <StartIcon />
               </button>
             ) : (
               <button onClick={stopRecording}>
-                Stop
+                <StopIcon />
               </button>
             )}
           </div>
+          <button aria-label="Settings" onClick={handleOpenSettings}>
+              <SettingsIcon />
+          </button>
         </div>
       </div>
       <Modal
@@ -240,6 +255,22 @@ export const RecordPage = () => {
         <Modal.Footer>
           <Button variant="secondary" onClick={handleClose}>
             Close
+          </Button>
+        </Modal.Footer>
+      </Modal>
+      <Modal show={showSettingsModal} onHide={handleCloseSettings} centered>
+        <Modal.Header closeButton>
+          <Modal.Title>Settings</Modal.Title>
+        </Modal.Header>
+        <Modal.Body>
+          <SettingsPanel
+            cameraFrame={cameraFrame}
+            handleCameraFrameChange={handleCameraFrameChange}
+          />
+        </Modal.Body>
+        <Modal.Footer>
+          <Button variant="primary" onClick={handleCloseSettings}>
+            Done
           </Button>
         </Modal.Footer>
       </Modal>
