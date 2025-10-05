@@ -9,17 +9,18 @@ import SCREENSHAREOFF from "../assets/ScreenShareOff.svg";
 import VIDEOON from "../assets/VideocamOn.svg";
 import VIDEOOFF from "../assets/VideocamOff.svg";
 
-import Button from 'react-bootstrap/Button';
-import Modal from 'react-bootstrap/Modal';
-import SettingsPanel from "../components/ui/SettingsPanel";
+import { shortcutConfig } from "../components/ui/ShortcutConfig.tsx";
+import { useHotkeys } from "../components/ui/useHotkeys.tsx";
+import SettingsModal from "./SettingsModal.tsx";
+import DownloadModal from "./DownloadModal.tsx";
 
 
 export const RecordPage = () => {
   const [screenShare, setScreenShare] = useState<MediaStream | null>(null)
   const [audioStream, setAudioStream] = useState<MediaStream | null>()
   const [cameraStream, setCameraStream] = useState<MediaStream | null>()
-  const videoRef = useRef<HTMLVideoElement>(null)
-  const cameraRef = useRef<HTMLVideoElement>(null)
+  const videoRef = useRef<HTMLVideoElement>(null);
+  const cameraRef = useRef<HTMLVideoElement>(null);
 
   const [isRecording, setIsRecording] = useState(false);
   const [mediaRecorder, setMediaRecorder] = useState<MediaRecorder | null>(null);
@@ -27,13 +28,17 @@ export const RecordPage = () => {
 
   const recordedChunksRef = useRef<Blob[]>([]);
   const [cameraFrame, setCameraFrame] = useState<'rectangle' | 'circle'>('rectangle')
+  const [blurCamera, setBlurCamera] = useState<boolean>(false)
+
+  const toggleBlurCamera = () => {
+    setBlurCamera(!blurCamera)
+  }
 
   const handleCameraFrameChange = (event: React.ChangeEvent<HTMLInputElement>) => {
     setCameraFrame(event.target.value as 'rectangle' | 'circle');
   }
 
   const [showSettingsModal, setShowSettingsModal] = useState(false);
-
   const handleOpenSettings = () => setShowSettingsModal(true);
   const handleCloseSettings = () => setShowSettingsModal(false);
 
@@ -181,6 +186,15 @@ export const RecordPage = () => {
     }
   };
 
+  useHotkeys(shortcutConfig, {
+    isRecording,
+    startRecording,
+    stopRecording,
+    toggleScreenCapture,
+    toggleCamera,
+    toggleAudio
+  });
+
   return (
     <>
       <div className="main-contianer">
@@ -189,7 +203,6 @@ export const RecordPage = () => {
             ref={videoRef}
             autoPlay
             playsInline
-
             muted // to prevent audio feedback
             id="screenshare-preview"
           />
@@ -231,49 +244,15 @@ export const RecordPage = () => {
           </button>
         </div>
       </div>
-      <Modal
-        show={show}
-        onHide={handleClose}
-        backdrop="static"
-        keyboard={false}
-        centered
-      >
-        <Modal.Header closeButton>
-          <Modal.Title>Recording Complete</Modal.Title>
-        </Modal.Header>
-        <Modal.Body>
-          <video className='download-preview' src={videoUrl} controls />
-          <button>
-            <a
-              href={videoUrl}
-              download={`recording-${Date.now()}.webm`}
-            >
-              Download Video
-            </a>
-          </button>
-        </Modal.Body>
-        <Modal.Footer>
-          <Button variant="secondary" onClick={handleClose}>
-            Close
-          </Button>
-        </Modal.Footer>
-      </Modal>
-      <Modal show={showSettingsModal} onHide={handleCloseSettings} centered>
-        <Modal.Header closeButton>
-          <Modal.Title>Settings</Modal.Title>
-        </Modal.Header>
-        <Modal.Body>
-          <SettingsPanel
-            cameraFrame={cameraFrame}
-            handleCameraFrameChange={handleCameraFrameChange}
-          />
-        </Modal.Body>
-        <Modal.Footer>
-          <Button variant="primary" onClick={handleCloseSettings}>
-            Done
-          </Button>
-        </Modal.Footer>
-      </Modal>
+      <DownloadModal show={show} handleClose={handleClose} videoUrl={videoUrl} />
+      <SettingsModal 
+        showSettingsModal={showSettingsModal}
+        handleCloseSettings={handleCloseSettings}
+        cameraFrame={cameraFrame}
+        handleCameraFrameChange={handleCameraFrameChange}
+        toggleBlurCamera={toggleBlurCamera}
+        blurCamera={blurCamera}
+      />
     </>
   );
 };
