@@ -8,8 +8,6 @@ interface SettingsModalProps {
   handleClose: () => void;
   cameraFrame: "rectangle" | "circle";
   handleCameraFrameChange: (event: React.ChangeEvent<HTMLInputElement>) => void;
-  toggleBlurCamera: () => void;
-  blurCamera: boolean;
 }
 
 const SettingsModal: React.FC<SettingsModalProps> = ({
@@ -17,8 +15,6 @@ const SettingsModal: React.FC<SettingsModalProps> = ({
   handleClose,
   cameraFrame,
   handleCameraFrameChange,
-  toggleBlurCamera,
-  blurCamera,
 }) => {
   return (
     <BaseModal
@@ -34,8 +30,6 @@ const SettingsModal: React.FC<SettingsModalProps> = ({
       <SettingsPanel
         cameraFrame={cameraFrame}
         handleCameraFrameChange={handleCameraFrameChange}
-        toggleBlurCamera={toggleBlurCamera}
-        blurCamera={blurCamera}
       />
     </BaseModal>
   );

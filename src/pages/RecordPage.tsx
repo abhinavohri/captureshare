@@ -28,11 +28,6 @@ export const RecordPage = () => {
 
   const recordedChunksRef = useRef<Blob[]>([]);
   const [cameraFrame, setCameraFrame] = useState<'rectangle' | 'circle'>('rectangle')
-  const [blurCamera, setBlurCamera] = useState<boolean>(false)
-
-  const toggleBlurCamera = () => {
-    setBlurCamera(!blurCamera)
-  }
 
   const handleCameraFrameChange = (event: React.ChangeEvent<HTMLInputElement>) => {
     setCameraFrame(event.target.value as 'rectangle' | 'circle');
@@ -66,7 +61,6 @@ export const RecordPage = () => {
 
   // modal
   const [show, setShow] = useState(false);
-
   const handleClose = () => {
     setShow(false);
     setVideoUrl("");
@@ -89,6 +83,10 @@ export const RecordPage = () => {
         if (videoRef.current) {
           videoRef.current.srcObject = captureStream;
         }
+        captureStream.getVideoTracks()[0].addEventListener('ended', () => {
+          setScreenShare(null);
+        });
+        
         setScreenShare(captureStream)
       } catch (err) {
         console.log(`Err: ${err}`)
@@ -250,8 +248,6 @@ export const RecordPage = () => {
         handleClose={handleCloseSettings}
         cameraFrame={cameraFrame}
         handleCameraFrameChange={handleCameraFrameChange}
-        toggleBlurCamera={toggleBlurCamera}
-        blurCamera={blurCamera}
       />
     </>
   );

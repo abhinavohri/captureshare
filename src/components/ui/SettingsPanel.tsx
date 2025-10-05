@@ -1,16 +1,12 @@
 import React from "react";
-import Form from 'react-bootstrap/Form';
 
 interface SettingsPanelProps {
     cameraFrame: 'rectangle' | 'circle';
     handleCameraFrameChange: (event: React.ChangeEvent<HTMLInputElement>) => void;
-    blurCamera: boolean;
-    toggleBlurCamera: () => void;
 }
 
-const SettingsPanel: React.FC<SettingsPanelProps> = ({ cameraFrame, handleCameraFrameChange, blurCamera, toggleBlurCamera }) => {
+const SettingsPanel: React.FC<SettingsPanelProps> = ({ cameraFrame, handleCameraFrameChange }) => {
   return (
-    <>
     <fieldset className="settings-group">
         <legend className="settings-legend">Camera Shape</legend>
         <div className="radio-option">
@@ -36,17 +32,6 @@ const SettingsPanel: React.FC<SettingsPanelProps> = ({ cameraFrame, handleCamera
             <label htmlFor="shape-circle">Circle</label>
         </div>
     </fieldset>
-     <fieldset className="settings-group">
-            <legend className="settings-legend">Camera Effects</legend>
-            <Form.Check 
-                type="switch"
-                id="blur-camera-switch"
-                label="Blur Camera"
-                checked={blurCamera}
-                onChange={toggleBlurCamera}
-            />
-        </fieldset>
-    </>
   );
 };
 
