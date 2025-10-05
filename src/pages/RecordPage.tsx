@@ -10,9 +10,9 @@ import VIDEOON from "../assets/VideocamOn.svg";
 import VIDEOOFF from "../assets/VideocamOff.svg";
 
 import { shortcutConfig } from "../components/ui/ShortcutConfig.tsx";
-import { useHotkeys } from "../components/ui/useHotkeys.tsx";
-import SettingsModal from "./SettingsModal.tsx";
-import DownloadModal from "./DownloadModal.tsx";
+import { useHotkeys } from "../hooks/useHotkeys.tsx";
+import SettingsModal from "../components/modals/SettingsModal.tsx";
+import DownloadModal from "../components/modals/DownloadModal.tsx";
 
 
 export const RecordPage = () => {
@@ -246,8 +246,8 @@ export const RecordPage = () => {
       </div>
       <DownloadModal show={show} handleClose={handleClose} videoUrl={videoUrl} />
       <SettingsModal 
-        showSettingsModal={showSettingsModal}
-        handleCloseSettings={handleCloseSettings}
+        show={showSettingsModal}
+        handleClose={handleCloseSettings}
         cameraFrame={cameraFrame}
         handleCameraFrameChange={handleCameraFrameChange}
         toggleBlurCamera={toggleBlurCamera}

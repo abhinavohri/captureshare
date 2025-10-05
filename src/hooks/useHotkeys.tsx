@@ -1,6 +1,5 @@
 import { useEffect } from 'react';
 
-// A generic interface for a single shortcut configuration item.
 export interface Shortcut<T> {
   combo: string;
   label: string;
@@ -9,7 +8,6 @@ export interface Shortcut<T> {
 
 export const useHotkeys = <T,>(config: Shortcut<T>[], props: T): void => {
   useEffect(() => {
-    // The event is now correctly typed as a KeyboardEvent.
     const handleKeyDown = (event: KeyboardEvent) => {
       if (event.ctrlKey || event.metaKey) {
         const pressedKey = event.key.toUpperCase();
@@ -18,7 +16,6 @@ export const useHotkeys = <T,>(config: Shortcut<T>[], props: T): void => {
 
         if (shortcut) {
           event.preventDefault();
-          // The 'props' passed to the action are now type-safe.
           shortcut.action(props);
         }
       }
@@ -28,5 +25,5 @@ export const useHotkeys = <T,>(config: Shortcut<T>[], props: T): void => {
     return () => {
       window.removeEventListener('keydown', handleKeyDown);
     };
-  }, [config, props]); // The dependency array is correct.
+  }, [config, props]);
 };
