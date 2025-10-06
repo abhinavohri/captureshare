@@ -9,6 +9,7 @@ import SCREENSHAREOFF from "../assets/ScreenShareOff.svg";
 import VIDEOON from "../assets/VideocamOn.svg";
 import VIDEOOFF from "../assets/VideocamOff.svg";
 
+import { HotkeyTooltipButton } from "../components/ui/HotkeyTooltipButton";
 import { shortcutConfig } from "../components/ui/ShortcutConfig.tsx";
 import { useHotkeys } from "../hooks/useHotkeys.tsx";
 import SettingsModal from "../components/modals/SettingsModal.tsx";
@@ -218,35 +219,69 @@ export const RecordPage = () => {
             </div>
           }
         </div>
+        
         <div className="control-tray">
-          <button className={screenShare ? 'is-active' : ''} aria-label="Screenshare" onClick={toggleScreenCapture}>
-            <img src={screenShare ? SCREENSHAREON : SCREENSHAREOFF} alt={screenShare ? "Stop Recording" : "Start Recording"} />
-          </button>
-          <button className={cameraStream ? 'is-active' : ''} aria-label="Virtual Camera" onClick={toggleCamera}>
-            <img src={cameraStream ? VIDEOON : VIDEOOFF} alt="Virtual Camera" />
-          </button>
-          <button className={audioStream ? 'is-active' : ''} aria-label="Microphone" onClick={toggleAudio}>
-            <img src={audioStream ? MIC : MICOFF} alt={audioStream ? "Microphone On" : "Microphone Off"} />
-          </button>
-          <div className="tooltip-container">
-            {!isRecording ? (
-              <button 
-                className='record-btn' 
-                onClick={startRecording} 
-                disabled={!screenShare && !cameraStream && !audioStream}
-                aria-label="Start Recording"
-                data-tooltip={isAnyStreamActive ?? "Enable at least one source to record"}>
-                <StartIcon />
-              </button>
-            ) : (
-              <button onClick={stopRecording} className='record-btn stop' aria-label="Stop Recording">
-                <StopIcon />
-              </button>
-            )}
-          </div>
-          <button aria-label="Settings" onClick={handleOpenSettings}>
-              <SettingsIcon />
-          </button>
+          <HotkeyTooltipButton
+            onClick={toggleScreenCapture}
+            className={screenShare ? 'is-active' : ''}
+            aria-label="Screenshare"
+            tooltipLabel={shortcutConfig.toggleScreenCapture.label}
+            hotkeyCombo={shortcutConfig.toggleScreenCapture.combo}
+          >
+            <img src={screenShare ? SCREENSHAREON : SCREENSHAREOFF} alt="Toggle Screenshare" />
+          </HotkeyTooltipButton>
+
+          <HotkeyTooltipButton
+            onClick={toggleCamera}
+            className={cameraStream ? 'is-active' : ''}
+            aria-label="Virtual Camera"
+            tooltipLabel={shortcutConfig.toggleCamera.label}
+            hotkeyCombo={shortcutConfig.toggleCamera.combo}
+          >
+            <img src={cameraStream ? VIDEOON : VIDEOOFF} alt="Toggle Camera" />
+          </HotkeyTooltipButton>
+
+          <HotkeyTooltipButton
+            onClick={toggleAudio}
+            className={audioStream ? 'is-active' : ''}
+            aria-label="Microphone"
+            tooltipLabel={shortcutConfig.toggleAudio.label}
+            hotkeyCombo={shortcutConfig.toggleAudio.combo}
+          >
+            <img src={audioStream ? MIC : MICOFF} alt="Toggle Microphone" />
+          </HotkeyTooltipButton>
+
+          {!isRecording ? (
+            <HotkeyTooltipButton
+              onClick={startRecording}
+              className='record-btn'
+              disabled={!isAnyStreamActive}
+              aria-label="Start Recording"
+              tooltipLabel={isAnyStreamActive ? shortcutConfig.startRecording.label : "Enable a source to record"}
+              hotkeyCombo={shortcutConfig.startRecording.combo}
+            >
+              <StartIcon />
+            </HotkeyTooltipButton>
+          ) : (
+            <HotkeyTooltipButton
+              onClick={stopRecording}
+              className='record-btn stop'
+              aria-label="Stop Recording"
+              tooltipLabel={shortcutConfig.stopRecording.label}
+              hotkeyCombo={shortcutConfig.stopRecording.combo}
+            >
+              <StopIcon />
+            </HotkeyTooltipButton>
+          )}
+
+          <HotkeyTooltipButton
+            onClick={handleOpenSettings}
+            aria-label="Settings"
+            tooltipLabel="Settings"
+            hotkeyCombo=""
+          >
+            <SettingsIcon />
+          </HotkeyTooltipButton>
         </div>
       </div>
       <DownloadModal show={show} handleClose={handleClose} videoUrl={videoUrl} />

@@ -1,29 +1,41 @@
 import { useEffect } from 'react';
 
-export interface Shortcut<T> {
-  combo: string;
-  label: string;
-  action: (props: T) => void;
+interface ShortcutConfigProps {
+  isRecording: boolean;
+  stopRecording: () => void;
+  startRecording: () => void;
+  toggleScreenCapture: () => void;
+  toggleCamera: () => void;
+  toggleAudio: () => void;
 }
 
-export const useHotkeys = <T,>(config: Shortcut<T>[], props: T): void => {
-  useEffect(() => {
-    const handleKeyDown = (event: KeyboardEvent) => {
-      if (event.ctrlKey || event.metaKey) {
-        const pressedKey = event.key.toUpperCase();
-        
-        const shortcut = config.find(s => s.combo === pressedKey);
+interface ShortcutConfigItem {
+  combo: string;
+  label: string;
+  action: (props: ShortcutConfigProps) => void;
+}
 
-        if (shortcut) {
-          event.preventDefault();
-          shortcut.action(props);
-        }
-      }
-    };
+export const useHotkeys = (
+    config: { [key: string]: ShortcutConfigItem },
+    props: ShortcutConfigProps
+): void => {
+    useEffect(() => {
+        const handleKeyDown = (event: KeyboardEvent) => {
+            if (event.ctrlKey || event.metaKey) {
+                const pressedKey = event.key.toUpperCase();
 
-    window.addEventListener('keydown', handleKeyDown);
-    return () => {
-      window.removeEventListener('keydown', handleKeyDown);
-    };
-  }, [config, props]);
+                const shortcut = Object.values(config).find(s => s.combo === pressedKey);
+
+                if (shortcut) {
+                    event.preventDefault();
+                    shortcut.action(props);
+                }
+            }
+        };
+
+        window.addEventListener('keydown', handleKeyDown);
+        return () => {
+            window.removeEventListener('keydown', handleKeyDown);
+        };
+    }, [config, props]);
 };
