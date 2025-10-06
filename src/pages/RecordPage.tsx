@@ -193,9 +193,11 @@ export const RecordPage = () => {
     toggleAudio
   });
 
+  const isAnyStreamActive = screenShare || cameraStream || audioStream;
+
   return (
     <>
-      <div className="main-contianer">
+      <div className="main-container">
         <div className='capture-container'>
           <video
             ref={videoRef}
@@ -226,13 +228,18 @@ export const RecordPage = () => {
           <button className={audioStream ? 'is-active' : ''} aria-label="Microphone" onClick={toggleAudio}>
             <img src={audioStream ? MIC : MICOFF} alt={audioStream ? "Microphone On" : "Microphone Off"} />
           </button>
-          <div>
+          <div className="tooltip-container">
             {!isRecording ? (
-              <button className='record-btn' onClick={startRecording} disabled={!screenShare && !cameraStream && !audioStream}>
+              <button 
+                className='record-btn' 
+                onClick={startRecording} 
+                disabled={!screenShare && !cameraStream && !audioStream}
+                aria-label="Start Recording"
+                data-tooltip={isAnyStreamActive ? "Start Recording" : "Enable at least one source to record"}>
                 <StartIcon />
               </button>
             ) : (
-              <button onClick={stopRecording}>
+              <button onClick={stopRecording} className='record-btn stop' aria-label="Stop Recording">
                 <StopIcon />
               </button>
             )}

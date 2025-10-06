@@ -9,6 +9,7 @@ body {
     background-color: #131313;
 
 }
+
 :root {
   font-family: system-ui, Avenir, Helvetica, Arial, sans-serif;
   line-height: 1.5;
@@ -16,11 +17,6 @@ body {
 
   color-scheme: light dark;
   color: rgba(255, 255, 255, 0.87);
-
-  font-synthesis: none;
-  text-rendering: optimizeLegibility;
-  -webkit-font-smoothing: antialiased;
-  -moz-osx-font-smoothing: grayscale;
 }
 
 a {
@@ -45,15 +41,10 @@ button {
   padding: 0.7em 1.1em;
   font-size: 1em;
   font-weight: 500;
-  font-family: inherit;
   cursor: pointer;
   transition: border-color 0.25s;
 }
 
-button:focus,
-button:focus-visible {
-  outline: 4px auto -webkit-focus-ring-color;
-}
 
 .capture-container {
   position: relative;
@@ -106,6 +97,16 @@ button:focus-visible {
   gap: 5px;
 }
 
+.control-tray button {
+  transition: all 0.2s ease-in-out;
+}
+
+.control-tray button:hover:not(:disabled) {
+  transform: translateY(-3px);
+  filter: brightness(1.15);
+}
+
+
 .control-tray button:not(.is-active){
   background-color: #FBEAE9;
 }
@@ -124,9 +125,31 @@ button:focus-visible {
   color: white;
 }
 
+.record-btn:disabled {
+  opacity: 0.5;
+  cursor: not-allowed;
+  transform: none;
+  filter: none;
+}
+
+.record-btn[data-tooltip]:disabled:hover::after {
+  content: attr(data-tooltip);
+  position: absolute;
+  bottom: 110%;
+  left: 50%;
+  transform: translateX(-50%);
+  background-color: #3C3C3C;
+  color: white;
+  padding: 8px 12px;
+  border-radius: 6px;
+  font-size: 0.9em;
+  font-weight: 500;
+  white-space: nowrap;
+  z-index: 10;
+}
+
 .main-container {
   height: 100vh;
-  padding: 1rem;
 }
 
 .download-preview {
@@ -163,8 +186,7 @@ button:focus-visible {
   align-items: center;
   height: 100vh;
   padding: 2rem;
-  background: linear-gradient(135deg, #1d2b64 0%, #0f172a 100%);
-  color: #ffffff;
+  background-color: white;
   text-align: center;
   overflow: hidden;
 }
@@ -190,21 +212,16 @@ button:focus-visible {
 }
 
 .home-container h1 {
-  font-family: 'Segoe UI', 'Roboto', sans-serif;
   font-size: clamp(2.5rem, 6vw, 4.5rem);
   font-weight: 700;
   margin-bottom: 1rem;
-  background: linear-gradient(90deg, #a770ef, #cf8bf3, #fdb99b);
-  -webkit-background-clip: text;
-  -webkit-text-fill-color: transparent;
-  background-clip: text;
-  color: transparent;
+  color: black;
 }
 
 .home-container p {
   font-size: clamp(1rem, 2.5vw, 1.25rem);
   max-width: 600px;
-  color: #cbd5e1;
+  color: black;
   margin-bottom: 2.5rem;
 }
 
@@ -213,7 +230,7 @@ button:focus-visible {
   font-size: 1.1rem;
   font-weight: 600;
   color: white;
-  background: linear-gradient(90deg, #8a2be2, #4b0082);
+  background: darkblue;
   padding: 1rem 2.5rem;
   border: none;
   border-radius: 50px;
@@ -225,7 +242,7 @@ button:focus-visible {
 
 .cta-button:hover {
   transform: translateY(-5px);
-  box-shadow: 0 8px 25px rgba(138, 43, 226, 0.5);
+  box-shadow: darkblue 0px 10px 20px -5px;
 }
 
 .camera-frame-circle {
