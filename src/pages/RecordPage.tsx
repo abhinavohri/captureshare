@@ -235,7 +235,7 @@ export const RecordPage = () => {
                 onClick={startRecording} 
                 disabled={!screenShare && !cameraStream && !audioStream}
                 aria-label="Start Recording"
-                data-tooltip={isAnyStreamActive ? "Start Recording" : "Enable at least one source to record"}>
+                data-tooltip={isAnyStreamActive ?? "Enable at least one source to record"}>
                 <StartIcon />
               </button>
             ) : (
